@@ -13,6 +13,7 @@ import (
 
 var Database *mongo.Database
 var User *mongo.Collection
+var Post *mongo.Collection
 
 func Init() {
 	ctx := context.Background()
@@ -30,9 +31,18 @@ func Init() {
 
 func initCollection() {
 	User = Database.Collection("users")
+	Post = Database.Collection("posts")
 
 	User.Indexes().CreateOne(context.Background(), mongo.IndexModel{
 		Keys:    bson.M{"email": 1},
+		Options: options.Index().SetUnique(true),
+	})
+
+	Post.Indexes().CreateOne(context.Background(), mongo.IndexModel{
+		Keys: bson.M{
+			"createdAt": 1,
+			"updatedAt": 1,
+		},
 		Options: options.Index().SetUnique(true),
 	})
 }

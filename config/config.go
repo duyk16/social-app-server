@@ -44,6 +44,6 @@ func Init() {
 	// Set the number of operating system threads
 	if ServerConfig.Threads > 0 {
 		runtime.GOMAXPROCS(ServerConfig.Threads)
+		log.Printf("Running with %v threads", ServerConfig.Threads)
 	}
-
 }
