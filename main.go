@@ -6,6 +6,9 @@ import (
 	"github.com/duyk16/social-app-server/config"
 )
 
+type Server struct {
+}
+
 func main() {
 	config.Init()
 	storage.Init()
