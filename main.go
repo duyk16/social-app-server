@@ -10,5 +10,4 @@ func main() {
 	config.Init()
 	storage.Init()
 	api.Init()
-
 }

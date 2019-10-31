@@ -11,6 +11,7 @@ import (
 type Config struct {
 	Threads int     `json:"threads"`
 	Name    string  `json:"name"`
+	Port    string  `json:"port"`
 	Storage Storage `json:"storage"`
 	JWTKey  string  `json:"jwt_key"`
 }
