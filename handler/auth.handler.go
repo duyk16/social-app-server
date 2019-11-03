@@ -21,6 +21,7 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 			"status": 1,
 			"error":  "Body is not valid",
 		})
+		return
 	}
 
 	var user model.User

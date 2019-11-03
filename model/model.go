@@ -8,6 +8,7 @@ import (
 )
 
 type Post struct {
+	ID        primitive.ObjectID   `json:"id" bson:"_id"`
 	Content   string               `json:"content"`
 	Owner     primitive.ObjectID   `json:"owner"`
 	Likes     []primitive.ObjectID `json:"likes"`

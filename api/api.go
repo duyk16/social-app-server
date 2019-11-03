@@ -38,13 +38,15 @@ func setRouter(r *mux.Router) {
 	r.HandleFunc("/api/user/{id}", handler.GetUserByID).Methods("GET")
 	r.HandleFunc("/api/user/{id}", func(w http.ResponseWriter, r *http.Request) {}).Methods("PUT")
 	r.HandleFunc("/api/user/{id}/avatar", handler.UpdateAvatar).Methods("PUT")
-	r.HandleFunc("/api/user/{id}", func(w http.ResponseWriter, r *http.Request) {}).Methods("DELETE")
+	// r.HandleFunc("/api/user/{id}", func(w http.ResponseWriter, r *http.Request) {}).Methods("DELETE")
 
-	r.HandleFunc("/api/post/", func(w http.ResponseWriter, r *http.Request) {}).Methods("GET")
-	r.HandleFunc("/api/post/", func(w http.ResponseWriter, r *http.Request) {}).Methods("POST")
-	r.HandleFunc("/api/post/{id}", func(w http.ResponseWriter, r *http.Request) {}).Methods("GET")
-	r.HandleFunc("/api/post/{id}", func(w http.ResponseWriter, r *http.Request) {}).Methods("PUT")
-	r.HandleFunc("/api/post/{id}", func(w http.ResponseWriter, r *http.Request) {}).Methods("DELETE")
+	r.HandleFunc("/api/post", handler.GetPosts).Methods("GET")
+	r.HandleFunc("/api/post", handler.CreatePost).Methods("POST")
+	r.HandleFunc("/api/post/{id}", handler.GetPostById).Methods("GET")
+	r.HandleFunc("/api/post/{id}", handler.UpdatePost).Methods("PUT")
+	r.HandleFunc("/api/post/{id}", handler.DeletePost).Methods("DELETE")
+	r.HandleFunc("/api/post/{id}/like", handler.LikePost).Methods("PUT")
+	r.HandleFunc("/api/post/{id}/unlike", handler.UnlikePost).Methods("PUT")
 }
 
 func listen(r *mux.Router, port string) {

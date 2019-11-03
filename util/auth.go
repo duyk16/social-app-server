@@ -6,10 +6,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gorilla/context"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/duyk16/social-app-server/config"
 	"github.com/duyk16/social-app-server/model"
 )
@@ -101,6 +102,7 @@ func JwtAuthentication(next http.Handler) http.Handler {
 			return
 		}
 
+		context.Set(r, "token", token)
 		next.ServeHTTP(w, r)
 	})
 }
