@@ -27,6 +27,7 @@ func Init() {
 	log.Println("Connected to MongoDB")
 
 	Database = client.Database(config.ServerConfig.Storage.Name)
+	initCollection()
 }
 
 func initCollection() {

@@ -14,8 +14,11 @@ import (
 func Init() {
 	r := mux.NewRouter()
 
-	// Serve static folder in server
-	r.Handle("/static", http.FileServer(http.Dir("./static")))
+	// Serve static file
+	go func() {
+		http.Handle("/static/", http.StripPrefix("/static", http.FileServer(http.Dir("static"))))
+		http.ListenAndServe(":"+config.ServerConfig.StaticPort, nil)
+	}()
 
 	// Middleware
 	r.Use(util.JwtAuthentication)
@@ -32,8 +35,9 @@ func setRouter(r *mux.Router) {
 
 	// r.HandleFunc("/api/user/", func(w http.ResponseWriter, r *http.Request) {}).Methods("GET")
 	// r.HandleFunc("/api/user/", func(w http.ResponseWriter, r *http.Request) {}).Methods("POST")
-	r.HandleFunc("/api/user/{id}", func(w http.ResponseWriter, r *http.Request) {}).Methods("GET")
+	r.HandleFunc("/api/user/{id}", handler.GetUserByID).Methods("GET")
 	r.HandleFunc("/api/user/{id}", func(w http.ResponseWriter, r *http.Request) {}).Methods("PUT")
+	r.HandleFunc("/api/user/{id}/avatar", handler.UpdateAvatar).Methods("PUT")
 	r.HandleFunc("/api/user/{id}", func(w http.ResponseWriter, r *http.Request) {}).Methods("DELETE")
 
 	r.HandleFunc("/api/post/", func(w http.ResponseWriter, r *http.Request) {}).Methods("GET")

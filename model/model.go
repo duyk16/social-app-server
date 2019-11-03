@@ -22,15 +22,15 @@ type User struct {
 	LastName  string             `json:"lastName"`
 	Email     string             `json:"email"`
 	Password  string             `json:"password"`
-	Avatar    Avatar             `json:"avatar"`
+	Avatar    string             `json:"avatar"`
 	CreatedAt time.Time          `json:"createdAt"`
 	UpdatedAt time.Time          `json:"updatedAt"`
 }
 
-type Avatar struct {
-	Path     string `json:"path"`
-	FileName string `json:"fileName"`
-}
+// type Avatar struct {
+// 	Path     string `json:"path"`
+// 	FileName string `json:"fileName"`
+// }
 
 type Token struct {
 	ID    primitive.ObjectID `json:"userId"`

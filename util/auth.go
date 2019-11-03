@@ -48,6 +48,7 @@ func JwtAuthentication(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		noAuthRoutes := []string{
 			"/api/auth",
+			"/static",
 		}
 
 		//check if request does not need authentication, serve the request if it doesn't need it

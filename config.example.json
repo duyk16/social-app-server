@@ -1,12 +1,14 @@
 {
     "threads": 4,
     "name": "SocialApp",
+    "server_ip": "localhost",
     "port": "8000",
+    "file_static_port": "8001",
 
     "storage": {
         "uri": "mongodb://localhost:27017",
         "name": "SocialApp"
     },
 
-    "jwt_key": "123456",
+    "jwt_key": "123456"
 }
