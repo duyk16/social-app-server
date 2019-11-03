@@ -13,8 +13,8 @@ type Post struct {
 	Owner     primitive.ObjectID   `json:"owner"`
 	Likes     []primitive.ObjectID `json:"likes"`
 	Image     string               `json:"image"`
-	CreatedAt time.Time            `json:"createdAt"`
-	UpdatedAt time.Time            `json:"updateAt"`
+	CreatedAt time.Time            `json:"createdAt" bson:"createdAt"`
+	UpdatedAt time.Time            `json:"updateAt" bson:"updatedAt"`
 }
 
 type User struct {
@@ -24,8 +24,8 @@ type User struct {
 	Email     string             `json:"email"`
 	Password  string             `json:"password"`
 	Avatar    string             `json:"avatar"`
-	CreatedAt time.Time          `json:"createdAt"`
-	UpdatedAt time.Time          `json:"updatedAt"`
+	CreatedAt time.Time          `json:"createdAt" bson:"createdAt"`
+	UpdatedAt time.Time          `json:"updatedAt" bson:"updatedAt"`
 }
 
 // type Avatar struct {

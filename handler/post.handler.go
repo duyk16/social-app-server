@@ -30,7 +30,8 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var likes []primitive.ObjectID
+	var likes = make([]primitive.ObjectID, 0)
+
 	post := model.Post{
 		ID:        primitive.NewObjectID(),
 		Content:   r.FormValue("content"),
@@ -257,14 +258,14 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	err = storage.Post.FindOneAndUpdate(
 		context.Background(),
 		bson.M{
-			"id": id,
+			"_id": id,
 		},
 		bson.M{
 			"$addToSet": bson.M{"likes": token.ID},
 			"$set":      bson.M{"updatedAt": time.Now()},
 		},
 		options.FindOneAndUpdate().SetReturnDocument(options.After),
-	).Decode(post)
+	).Decode(&post)
 
 	if err != nil {
 		util.JSON(w, 500, util.T{
@@ -301,14 +302,14 @@ func UnlikePost(w http.ResponseWriter, r *http.Request) {
 	err = storage.Post.FindOneAndUpdate(
 		context.Background(),
 		bson.M{
-			"id": id,
+			"_id": id,
 		},
 		bson.M{
 			"$pull": bson.M{"likes": token.ID},
 			"$set":  bson.M{"updatedAt": time.Now()},
 		},
 		options.FindOneAndUpdate().SetReturnDocument(options.After),
-	).Decode(post)
+	).Decode(&post)
 
 	if err != nil {
 		util.JSON(w, 500, util.T{

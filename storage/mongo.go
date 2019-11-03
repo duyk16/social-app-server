@@ -43,10 +43,12 @@ func initCollection() {
 		Keys: bson.M{
 			"createdAt": 1,
 		},
+		Options: options.Index(),
 	})
 	Post.Indexes().CreateOne(context.Background(), mongo.IndexModel{
 		Keys: bson.M{
 			"updatedAt": 1,
 		},
+		Options: options.Index(),
 	})
 }
