@@ -60,7 +60,6 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 	return
-
 }
 
 func GetPosts(w http.ResponseWriter, r *http.Request) {
