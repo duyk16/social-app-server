@@ -87,13 +87,13 @@ func GetUserByID(w http.ResponseWriter, r *http.Request) {
 	user.Password = ""
 
 	util.JSON(w, 200, util.T{
-		"statusr": 0,
+		"status": 0,
 		"user": util.T{
 			"id":        user.ID.Hex(),
 			"firstName": user.FirstName,
 			"lastName":  user.LastName,
 			"email":     user.Email,
-			"avatar":    user.Avatar,
+			"avatar":    "http://" + config.ServerConfig.ServerIP + ":" + config.ServerConfig.StaticPort + "/" + user.Avatar,
 		},
 	})
 	return
@@ -150,7 +150,7 @@ func UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 		"status": 0,
 		"user": util.T{
 			"id":     user.ID.Hex(),
-			"avatar": "http://" + config.ServerConfig.ServerIP + config.ServerConfig.StaticPort + "/" + path,
+			"avatar": "http://" + config.ServerConfig.ServerIP + ":" + config.ServerConfig.StaticPort + "/" + path,
 		},
 	})
 }

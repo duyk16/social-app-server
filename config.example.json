@@ -10,5 +10,6 @@
         "name": "SocialApp"
     },
 
-    "jwt_key": "123456"
+    "jwt_key": "123456",
+    "jwt_expire": 30
 }

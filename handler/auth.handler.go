@@ -43,12 +43,12 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := util.GenerateToken(user.ID, user.Email)
+	tokenString, expireTime := util.GenerateToken(user.ID, user.Email)
 
 	util.JSON(w, 200, util.T{
 		"status": 0,
-		"token":  token,
+		"token":  tokenString,
+		"expire": expireTime,
 		"userId": user.ID,
 	})
-
 }

@@ -33,16 +33,17 @@ func ComparePasswords(hashedPwd string, pwd string) bool {
 	return true
 }
 
-func GenerateToken(userId primitive.ObjectID, email string) string {
+func GenerateToken(userId primitive.ObjectID, email string) (tokenString string, expireTime int64) {
+	expireTime = time.Now().Add(time.Hour * 24 * time.Duration(config.ServerConfig.JWTExpire)).Unix()
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), model.Token{
 		ID:    userId,
 		Email: email,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+			ExpiresAt: expireTime,
 		},
 	})
-	tokenString, _ := token.SignedString([]byte(config.ServerConfig.JWTKey))
-	return tokenString
+	tokenString, _ = token.SignedString([]byte(config.ServerConfig.JWTKey))
+	return tokenString, expireTime
 }
 
 func JwtAuthentication(next http.Handler) http.Handler {

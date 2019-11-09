@@ -12,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
+	"github.com/duyk16/social-app-server/config"
 	"github.com/duyk16/social-app-server/model"
 	"github.com/duyk16/social-app-server/storage"
 	"github.com/duyk16/social-app-server/util"
@@ -56,7 +57,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		"status": 0,
 		"post": util.T{
 			"id":    post.ID.Hex(),
-			"image": post.Image,
+			"image": "http://" + config.ServerConfig.ServerIP + ":" + config.ServerConfig.StaticPort + "/" + post.Image,
 		},
 	})
 	return

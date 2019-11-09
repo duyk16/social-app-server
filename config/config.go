@@ -16,6 +16,7 @@ type Config struct {
 	StaticPort string  `json:"file_static_port"`
 	Storage    Storage `json:"storage"`
 	JWTKey     string  `json:"jwt_key"`
+	JWTExpire  int     `json:"jwt_expire"`
 }
 
 type Storage struct {
