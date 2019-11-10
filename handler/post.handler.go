@@ -67,7 +67,8 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 	page, limit := util.PaginateList(r)
 
 	countChan := make(chan int64)
-	postsChan := make(chan []model.Post)
+	postsChan := make(chan []model.PostHome)
+	prefix := "http://" + config.ServerConfig.ServerIP + ":" + config.ServerConfig.StaticPort + "/"
 
 	go func() {
 		count, _ := storage.Post.CountDocuments(context.Background(), bson.M{})
@@ -75,13 +76,37 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	go func() {
-		findOption := options.Find()
-		findOption.SetSort(bson.M{"createdAt": -1})
-		findOption.SetLimit(limit)
-		findOption.SetSkip(page * limit)
-		cur, err := storage.Post.Find(context.Background(), bson.M{}, findOption)
+		var posts []model.PostHome
+		cur, err := storage.Post.Aggregate(
+			context.Background(),
+			[]interface{}{
+				bson.M{"$sort": bson.M{"createdAt": -1}},
+				bson.M{"$skip": page * limit},
+				bson.M{"$limit": limit},
+				bson.M{
+					"$lookup": bson.M{
+						"from":         "users",
+						"localField":   "owner",
+						"foreignField": "_id",
+						"as":           "owner",
+					},
+				},
+				bson.M{
+					"$project": bson.M{
+						"content":   1,
+						"likes":     1,
+						"image":     1,
+						"createdAt": 1,
+						"updatedAt": 1,
+						"owner":     bson.M{"$arrayElemAt": []interface{}{"$owner", 0}},
+					},
+				},
+			},
+		)
 
 		if err != nil {
+			// log.Println("Aggregate error", err)
+			postsChan <- posts
 			util.JSON(w, 500, util.T{
 				"status": 1,
 				"error":  err.Error(),
@@ -91,10 +116,8 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 
 		defer cur.Close(context.Background())
 
-		var posts []model.Post
-
 		for cur.Next(context.Background()) {
-			var post model.Post
+			var post model.PostHome
 			err = cur.Decode(&post)
 
 			if err != nil {
@@ -105,18 +128,28 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
+			post.Owner.Avatar = prefix + post.Owner.Avatar
+
 			posts = append(posts, post)
 		}
 
 		postsChan <- posts
 	}()
 
+	posts := <-postsChan
+	count := <-countChan
+	l := len(posts)
+
+	for i := 0; i < l; i++ {
+		posts[i].Image = prefix + posts[i].Image
+	}
+
 	util.JSON(w, 200, util.T{
 		"status": 0,
-		"posts":  <-postsChan,
+		"posts":  posts,
 		"page":   page,
 		"limit":  limit,
-		"count":  <-countChan,
+		"count":  count,
 	})
 }
 
@@ -141,6 +174,8 @@ func GetPostById(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+
+	post.Image = "http://" + config.ServerConfig.ServerIP + ":" + config.ServerConfig.StaticPort + "/" + post.Image
 
 	util.JSON(w, 200, util.T{
 		"status": 0,
@@ -201,6 +236,8 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+
+	post.Image = "http://" + config.ServerConfig.ServerIP + ":" + config.ServerConfig.StaticPort + "/" + post.Image
 
 	util.JSON(w, 200, util.T{
 		"status": 0,
