@@ -114,6 +114,7 @@ func UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	r.Body = http.MaxBytesReader(w, r.Body, 5*1024*1024)
 	err, path := util.UploadFileAnDeleteOld(r, "static/avatar", "u-*.png", user.Avatar)
 
 	if err != nil {
